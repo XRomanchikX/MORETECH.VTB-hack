@@ -16,7 +16,9 @@ Struct project:
 
 ## Example use
 
-```python 
+```python
+from screenCV import InitialScreening
+
 ll = InitialScreening(
 
     PathToVacancy = "data/vacancyBuisness.docx",
