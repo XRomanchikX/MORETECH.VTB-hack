@@ -7,8 +7,8 @@ class InitialScreening:
                 self,
                 PathToVacancy: str,
                 PathToCV: str,
-                ApiUrl: str,
-                ApiKey: str,
+                ApiUrl: str = "http://localhost:1234/v1",
+                ApiKey: str = "lm-studio",
                 mode: int = 0
             ):
         """
@@ -72,11 +72,22 @@ class InitialScreening:
         Repetition of key requirements to minimize errors.
         No introductory phrases - just the gist, so that the neural network does not add unnecessary things.
 
+        DO NOT use any tools, functions, or external data.
+        DO NOT explain anything.
+        DO NOT add any text before or after the number.
+        DO NOT round to 0 or 100 unless absolutely certain.
+
+        The vacancy is very strict. Most resumes should get 0.0% or low scores.
+        Only perfect matches get above 80%.
+        If the resume is bad, return 0.0%.
+        DO NOT be optimistic.
+        DO NOT assume missing skills.
+
         Vacancy requirements:
         {self.vacancy}
         """
 
-        client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
+        client = OpenAI(base_url=self.base_url, api_key=self.api_key)
 
         completion = client.chat.completions.create(
             model="model-identifier",
@@ -84,8 +95,21 @@ class InitialScreening:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"CV: {self.cv}"}
             ],
-            temperature=0
+            temperature=1
         )
 
 
         return (float(completion.choices[0].message.content.replace("%", "")))
+
+def process_cv(path_to_vacancy, path_to_cv):
+    screening = InitialScreening(
+        PathToVacancy=path_to_vacancy,
+        PathToCV=path_to_cv
+    )
+    score = screening.check_cv()
+    
+    verdict = 'approved' if score >= 50.0 else 'rejected'
+    return {
+        'score': score,
+        'verdict': verdict
+    }
