@@ -1,3 +1,2 @@
-ml/data
-ml/*.ipynb
+ml/
 .venv/
