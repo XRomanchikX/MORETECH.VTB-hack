@@ -8,19 +8,28 @@ class InitialScreening:
                 PathToVacancy: str,
                 PathToCV: str,
                 ApiUrl: str,
-                ApiKey: str
+                ApiKey: str,
+                mode: int = 0
             ):
+        """
+        Mode: int
+
+        mode = 0 (default): load files
+
+        mode = 1: load text (give text to Pathes)
+        """
         self.PathToVacancy = PathToVacancy
         self.PathToCV = PathToCV
         self.base_url = ApiUrl
         self.api_key = ApiKey
 
-        # print("Загрузка вакансии и резюме...")
-        self.vacancy, self.cv = self.__load_file(self.PathToVacancy), self.__load_file(self.PathToCV)
-        # print("Успешно!\nНачался перевод вакансии и резюме")
+        if mode == 0:
+            self.vacancy, self.cv = self.__load_file(self.PathToVacancy), self.__load_file(self.PathToCV)
+        else:
+            self.vacancy, self.cv = self.PathToVacancy, self.PathToCV
+
         self.vacancy = self.__formating_text(self.vacancy)
         self.cv = self.__formating_text(self.cv)
-        # print("Успешно!")
 
     def __load_file(self, file: str):
         data = ""
