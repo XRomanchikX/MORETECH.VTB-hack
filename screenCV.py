@@ -89,4 +89,3 @@ class InitialScreening:
 
 
         return (float(completion.choices[0].message.content.replace("%", "")))
-
